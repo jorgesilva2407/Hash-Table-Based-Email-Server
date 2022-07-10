@@ -1,14 +1,15 @@
 #ifndef SERVER
 #define SERVER
 
-#include "Users.hpp"
+#include "List.hpp"
+#include "User.hpp"
 #include "Email.hpp"
 #include <string>
 #include <fstream>
 
 namespace Server{
     class Server{
-        Users::Users* hashTable;
+        UserList** hashTable;
         int hashTableSize;
         std::ofstream out;
 
@@ -18,7 +19,7 @@ namespace Server{
          * @param n Valor a ser processado pela função
          * @return int | Posição na tabela
          */
-        inline int hashFunction(int n) const;
+        inline int hashFunction(int n) const {return (n % hashTableSize);}
 
         public:
             /**
@@ -37,7 +38,7 @@ namespace Server{
              * 
              * @return Imprime na tela o ID do email, do usuário e em que linha da tabela se encontra
              */
-            void insert(int userId, Email mail);
+            void insert(int userId, User::Email* email);
 
             /**
              * @brief Procura por um email no servidor
@@ -60,7 +61,7 @@ namespace Server{
             void erase(int userId, int emailId);
 
             /**
-             * @brief Destroi o objeto Server
+             * @brief Destroi objeto Server
              * 
              */
             ~Server();

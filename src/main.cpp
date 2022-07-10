@@ -1,5 +1,6 @@
 #include "Email.hpp"
 #include "Server.hpp"
+#include "memlog.h"
 #include <sstream>
 #include <fstream>
 #include <string>
@@ -22,19 +23,19 @@ int main(int argc, char** argv){
         std::stringstream ss;
 
         // flag que define se o log de acesso deve ser criado ou não
-        bool ativaMemLog = false;
+        bool activateMemLog = false;
 
         // processa os parâmetros passados na chamada do programa
         for(int i=1; i < argc; i++){
             std::string aux = argv[i];
             if(aux == "-i"){
                 i++;
-                input_file = argv[i];
+                inputFile = argv[i];
             } else if(aux == "-o"){
                 i++;
                 outputFile = argv[i];
             } else if(aux == "-l"){
-                ativaMemLog = true;
+                activateMemLog = true;
             }
         }
 
@@ -42,12 +43,19 @@ int main(int argc, char** argv){
         if(inputFile == "") throw "Nenhum arquivo de entrada passado como parâmetro";
         if(outputFile == "") throw "Nenhum arquivo de saída passado como parâmetro";
 
+        // inicia log de memória
+        char memLog[] = "memLog.out";
+        iniciaMemLog(memLog);
+
+        // define se o log de memória deve ou não ser escrito
+        activateMemLog ? ativaMemLog():desativaMemLog();
+
         // abre o arquivo de entrada e observa se foi aberto corretamente
         std::ifstream in(inputFile);
         if(!in.is_open()) throw "Falha ao abrir o arquivo de entrada";
         
         // lê a primeira linha do arquivo
-        in.getline(buffer);
+        std::getline(in, buffer);
         ss << buffer;
 
         // inicializa o tamanho da tabela hash
@@ -64,7 +72,7 @@ int main(int argc, char** argv){
 
         while(!in.eof()){
             // lê a linha e a coloca em uma stringstream para facilitar seu processamento
-            in.getline(buffer);
+            std::getline(in, buffer);
             ss << buffer;
 
             // lê o comando a ser executado
@@ -73,10 +81,10 @@ int main(int argc, char** argv){
             // decide o que o programa deve fazer de acordo com o comando que foi passado
             if(command == "ENTREGA"){
                 // cria um e-mail
-                E_mail mail;
+                User::Email* email = new User::Email();
 
                 // lê o ID do usuário e do e-mail, e a quantidade de palavras da mensagem
-                ss >> userId >> mail.id >> nWords;
+                ss >> userId >> email->id >> nWords;
                 
                 // variável auxiliar para a leitura da mensagem
                 std::string aux;
@@ -84,30 +92,34 @@ int main(int argc, char** argv){
                 // lê a mensagem
                 for(int i=0; i < nWords; i++){
                     ss >> aux;
-                    mail.message += aux;
+                    email->message += aux;
                 }
 
                 // insere o e-mail, atribuído a um usuário
-                table->insert(userId, mail);
-            } else if(command = "CONSULTA"){
+                table->insert(userId, email);
+            } else if(command == "CONSULTA"){
                 // lê o ID do usuário e o ID do e-mail
                 ss >> userId >> emailId;
 
                 // procura pelo e-mail na tabela hash
                 table->find(userId, emailId);
-            } else if(command = "APAGA"){
+            } else if(command == "APAGA"){
                 // lê o ID do usuário e o ID do e-mail
                 ss >> userId >> emailId;
 
                 // apaga o e-mail, atribuído a um usuário
                 table->erase(userId, emailId);
-            } else {
-                throw "Comando inválido passado durante a execução";
-            }
+            } 
+            // else {
+            //     throw "Comando inválido passado durante a execução";
+            // }
         }
 
         // fecha o arquivo
         in.close();
+
+        // finaliza o log de memória
+        finalizaMemLog();
     }
 
     catch(const char* e){
