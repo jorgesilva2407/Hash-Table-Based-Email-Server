@@ -1,6 +1,8 @@
 CC = g++
 SRC = src
 OBJ = obj
+DBG = debug
+OUT = out
 INC = include
 BIN = bin
 
@@ -15,5 +17,9 @@ $(EXE) : $(OBJS) $(SRC)/main.cpp
 $(OBJ)/%.o : $(SRC)/%.c* $(INC)/%.h*
 	$(CC) -o $@ -c $< $(CFLAGS)
 
+copy:
+	cp $(SRC)/* $(DBG)
+	cp $(INC)/* $(DBG)
+
 clear:
-	rm obj/*.o bin/*.exe out/*
+	rm $(OBJ)/*.o $(BIN)/*.exe $(OUT)/*

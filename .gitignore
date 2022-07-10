@@ -2,5 +2,7 @@
 **/test_inputs/*
 **/test_outputs/*
 **/out/*
+**/debug/*
 *.o
 *.exe
+*.out

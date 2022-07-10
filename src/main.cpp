@@ -71,6 +71,9 @@ int main(int argc, char** argv){
         std::string command = "";
 
         while(!in.eof()){
+            // reinicia a stringstream
+            ss.clear();
+
             // lê a linha e a coloca em uma stringstream para facilitar seu processamento
             std::getline(in, buffer);
             ss << buffer;
@@ -109,10 +112,9 @@ int main(int argc, char** argv){
 
                 // apaga o e-mail, atribuído a um usuário
                 table->erase(userId, emailId);
-            } 
-            // else {
-            //     throw "Comando inválido passado durante a execução";
-            // }
+            } else {
+                throw "Comando inválido passado durante a execução";
+            }
         }
 
         // fecha o arquivo
