@@ -16,4 +16,4 @@ $(OBJ)/%.o : $(SRC)/%.c* $(INC)/%.h*
 	$(CC) -o $@ -c $< $(CFLAGS)
 
 clear:
-	rm obj/*.o bin/*.exe
+	rm obj/*.o bin/*.exe out/*
