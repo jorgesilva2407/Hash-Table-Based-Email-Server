@@ -154,6 +154,9 @@ void Server::Server::erase(int userId, int emailId){
         return;
     }
 
+    // deleta o email
+    delete email;
+
     // mensagem informando o sucesso da operação
     out << "OK: MENSAGEM APAGADA" << std::endl;
 }
