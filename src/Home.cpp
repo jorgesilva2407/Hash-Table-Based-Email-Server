@@ -1,5 +1,8 @@
 #include "Home.hpp"
 
+#define RIGHT true
+#define LEFT false
+
 /**
  * @brief Constroi um novo Node
  * 
@@ -106,7 +109,142 @@ User::Email* User::Home::find(int ID){
  * @return User::Email* | o email que foi apagado
  */
 User::Email* User::Home::erase(int ID){
-    return nullptr;
+    bool step;
+
+    User::Node* previous = nullptr;
+    User::Node* current = root;
+
+    while(current != nullptr){
+        if(current->email->id == ID){
+            break;
+        } else if(ID < current->email->id){
+            // procura-se na subárvore a esquerda do nó atual, caso o nó armazene o email desejado
+            previous = current;
+            current = current->left;
+            step = LEFT;
+        } else {
+            // procura-se na subárvore a direita do nó atual, caso o nó armazene o email desejado
+            previous = current;
+            current = current->right;
+            step = RIGHT;
+        }
+    }
+
+    if(current == nullptr) return nullptr;
+
+    if(current == root){
+        if(current->left == nullptr){
+            root = current->right;
+        } else if(current->right == nullptr){
+            root = current->left;
+        } else {
+            User::Node* adjascente;
+            User::Node* adjascentePrevious;
+            adjascentePrevious = current;
+            adjascente = current->right;
+            
+            while(adjascente->left != nullptr){
+                adjascentePrevious = adjascente;
+                adjascente = adjascente->left;
+            }
+
+            if(adjascente->right != nullptr){
+                adjascentePrevious->left = adjascente->right;
+            } else {
+                adjascentePrevious->left = nullptr;
+            }
+
+            if(step == RIGHT){
+                previous->right = adjascente;
+            } else {
+                previous->left = adjascente;
+            }
+
+            adjascente->right = current->right;
+            adjascente->left = current->left;
+
+            User::Email* aux = current->email;
+            current->email = nullptr;
+            current->right = nullptr;
+            delete current;
+            return aux;
+        }
+
+        User::Email* aux = current->email;
+        current->email = nullptr;
+        current->right = nullptr;
+        current->left = nullptr;
+        delete current;
+        return aux;
+    }
+
+    if(current->left == nullptr && current->right == nullptr){
+        if(step == RIGHT){
+            previous->right = nullptr;
+        } else {
+            previous->left = nullptr;
+        }
+
+        User::Email* aux = current->email;
+        current->email = nullptr;
+        delete current;
+        return aux;
+    } else if(current->left != nullptr && current->right == nullptr){
+        if(step == RIGHT){
+            previous->right = current->left;
+        } else {
+            previous->left = current->left;
+        }
+
+        User::Email* aux = current->email;
+        current->email = nullptr;
+        current->left = nullptr;
+        delete current;
+        return aux;
+    } else if(current->left == nullptr && current->right != nullptr){
+        if(step == RIGHT){
+            previous->right = current->right;
+        } else {
+            previous->left = current->right;
+        }
+
+        User::Email* aux = current->email;
+        current->email = nullptr;
+        current->right = nullptr;
+        delete current;
+        return aux;
+    } else {
+        User::Node* adjascente;
+        User::Node* adjascentePrevious;
+        adjascentePrevious = current;
+        adjascente = current->right;
+        
+        while(adjascente->left != nullptr){
+            adjascentePrevious = adjascente;
+            adjascente = adjascente->left;
+        }
+
+        if(adjascente->right != nullptr){
+            adjascentePrevious->left = adjascente->right;
+        } else {
+            adjascentePrevious->left = nullptr;
+        }
+
+        if(step == RIGHT){
+            previous->right = adjascente;
+        } else {
+            previous->left = adjascente;
+        }
+
+        adjascente->right = current->right;
+        adjascente->left = current->left;
+
+        User::Email* aux = current->email;
+        current->email = nullptr;
+        current->right = nullptr;
+        delete current;
+        return aux;
+    }
 }
 
 /**
