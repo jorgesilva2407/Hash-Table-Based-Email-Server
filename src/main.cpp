@@ -76,6 +76,7 @@ int main(int argc, char** argv){
 
             // lê a linha e a coloca em uma stringstream para facilitar seu processamento
             std::getline(in, buffer);
+            if(buffer == "") continue;
             ss << buffer;
 
             // lê o comando a ser executado
@@ -95,11 +96,14 @@ int main(int argc, char** argv){
                 // lê a mensagem
                 for(int i=0; i < nWords; i++){
                     ss >> aux;
-                    email->message += aux;
+                    email->message += (i != 0 ? " " : "") + aux;
                 }
 
                 // insere o e-mail, atribuído a um usuário
                 table->insert(userId, email);
+
+                // reseta o valor da variável email para evitar vazamento de memória
+                email = nullptr;
             } else if(command == "CONSULTA"){
                 // lê o ID do usuário e o ID do e-mail
                 ss >> userId >> emailId;
@@ -116,6 +120,9 @@ int main(int argc, char** argv){
                 throw "Comando inválido passado durante a execução";
             }
         }
+
+        // deleta a tabela hash
+        delete table;
 
         // fecha o arquivo
         in.close();
