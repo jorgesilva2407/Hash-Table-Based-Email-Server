@@ -139,7 +139,7 @@ User::Email* User::Home::erase(int ID){
 
     // remoção no caso do nó desejado ser a raiz
     if(current == root){
-        // as duas primeiras condições avaliam se a árvore tem 1 ou nenhum filho, enquanto a última trata quando a árvore tem dois filhos
+        // as duas primeiras condições avaliam se a árvore tem um ou nenhum filho, enquanto a última trata quando a árvore tem dois filhos
         if(current->left == nullptr){
             root = current->right;
         } else if(current->right == nullptr){
