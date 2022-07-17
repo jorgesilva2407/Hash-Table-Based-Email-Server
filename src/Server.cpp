@@ -168,7 +168,7 @@ void Server::Server::erase(int userId, int emailId){
 Server::Server::~Server(){
     // destroi todos os elementos de cada posição da tabela hash
     for(int i=0; i < hashTableSize; i++){
-        delete hashTable[i];
+        if(hashTable[i] != nullptr) delete hashTable[i];
     }
     
     // destroi a tabela hash em si

@@ -1,4 +1,5 @@
 #include "Home.hpp"
+#include <iostream>
 
 #define RIGHT true
 #define LEFT false
@@ -150,7 +151,7 @@ User::Email* User::Home::erase(int ID){
             User::Node* adjascentePrevious;
             adjascentePrevious = current;
 
-            // opera na subárvore da direita 
+            // opera na subárvore da direita
             adjascente = current->right;
             
             // encontra o nó mais a esquerda da subárvore da direita
@@ -159,19 +160,20 @@ User::Email* User::Home::erase(int ID){
                 adjascente = adjascente->left;
             }
 
-            // remove o nó adascente da sua posição
-            if(adjascente->right != nullptr){
-                adjascentePrevious->left = adjascente->right;
+            if(adjascente == current->right){
+                current->right = adjascente->right;
             } else {
-                adjascentePrevious->left = nullptr;
+                adjascentePrevious->left = adjascente->right;
             }
 
-            // substitui a ráiz pelo seu adjascente
-            root = adjascente;
+            User::Email* aux = current->email;
+            current->email = adjascente->email;
 
-            // liga a nova raíz aos filhos da raíz anterior
-            root->right = current->right;
-            root->left = current->left;
+            // destroi o nó
+            adjascente->email = nullptr;
+            adjascente->right = nullptr;
+            delete adjascente;
+            return aux;
         }
 
         // desaloca memória da ráiz anterior
@@ -246,29 +248,19 @@ User::Email* User::Home::erase(int ID){
             adjascente = adjascente->left;
         }
 
-        // remove o nó adascente da sua posição
-        if(adjascente->right != nullptr){
+        if(adjascente == current->right){
+            current->right = adjascente->right;
+        } else {
             adjascentePrevious->left = adjascente->right;
-        } else {
-            adjascentePrevious->left = nullptr;
-        }
-        
-        // liga o nó a ser inserido no lugar que deve ser inserido
-        if(step == RIGHT){
-            previous->right = adjascente;
-        } else {
-            previous->left = adjascente;
         }
 
-        // liga o nó a ser inserido nos filhos do que acaba de ser removido
-        adjascente->right = current->right;
-        adjascente->left = current->left;
+        User::Email* aux = current->email;
+        current->email = adjascente->email;
 
         // destroi o nó
-        User::Email* aux = current->email;
-        current->email = nullptr;
-        current->right = nullptr;
-        delete current;
+        adjascente->email = nullptr;
+        adjascente->right = nullptr;
+        delete adjascente;
         return aux;
     }
 }

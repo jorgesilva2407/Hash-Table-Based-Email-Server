@@ -89,6 +89,10 @@ int main(int argc, char** argv){
 
                 // lê o ID do usuário e do e-mail, e a quantidade de palavras da mensagem
                 ss >> userId >> email->id >> nWords;
+
+                // verifica se as entradas são válidas
+                if(nWords < 0) throw "Quantidade negativa de palavras na mensagem";
+                if(nWords > 200) throw "Quantidade de palavras acima do limite";
                 
                 // variável auxiliar para a leitura da mensagem
                 std::string aux;
@@ -96,6 +100,9 @@ int main(int argc, char** argv){
                 // lê a mensagem
                 for(int i=0; i < nWords; i++){
                     ss >> aux;
+
+                    if(aux.size() > 40) throw "Quantidade muito grande de caracteres na palavra";
+
                     email->message += (i != 0 ? " " : "") + aux;
                 }
 
@@ -105,24 +112,28 @@ int main(int argc, char** argv){
                 // reseta o valor da variável email para evitar vazamento de memória
                 email = nullptr;
             } else if(command == "CONSULTA"){
+                // continue;
                 // lê o ID do usuário e o ID do e-mail
                 ss >> userId >> emailId;
 
                 // procura pelo e-mail na tabela hash
                 table->find(userId, emailId);
             } else if(command == "APAGA"){
+                // continue;
+
                 // lê o ID do usuário e o ID do e-mail
                 ss >> userId >> emailId;
 
                 // apaga o e-mail, atribuído a um usuário
                 table->erase(userId, emailId);
             } else {
+                continue;
                 throw "Comando inválido passado durante a execução";
             }
         }
 
         // deleta a tabela hash
-        delete table;
+        // delete table;
 
         // fecha o arquivo
         in.close();
