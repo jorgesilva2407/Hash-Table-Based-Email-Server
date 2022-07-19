@@ -132,9 +132,6 @@ int main(int argc, char** argv){
             }
         }
 
-        // deleta a tabela hash
-        // delete table;
-
         // fecha o arquivo
         in.close();
 

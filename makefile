@@ -8,17 +8,17 @@ INC = include
 BIN = bin
 
 OBJS = $(OBJ)/Home.o $(OBJ)/User.o $(OBJ)/List.o $(OBJ)/Server.o $(OBJ)/memlog.o
-CFLAGS = -Wall -I include -std=c++17
+CFLAGS = -Wall -Werror -I include -std=c++17 -g
 
 EXE = $(BIN)/tp3.exe
 
 $(EXE) : $(OBJS) $(SRC)/main.cpp
-	$(CC) $(CFLAGS) -o $(EXE) $(SRC)/main.cpp $(OBJS) -g
+	$(CC) $(CFLAGS) -o $(EXE) $(SRC)/main.cpp $(OBJS)
 
 $(OBJ)/%.o : $(SRC)/%.c* $(INC)/%.h*
 	$(CC) -o $@ -c $< $(CFLAGS)
 
-test:
+test: $(EXE)
 	$(EXE) -i $(GRC)/test1.txt -o $(OUT)/test1.out
 	cat memLog.out
 	$(EXE) -i $(GRC)/test2.txt -o $(OUT)/test2.out
